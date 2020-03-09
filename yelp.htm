@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #map {
+        height: 400px;
+        width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Yelp Help</title>
+
+    <!--yelp help image-->
+    <div>
+        <img class="marginauto" src="yelp.png" alt="centered image" width="319" height="118"/>
+    </div>
+
+    <!--centers yelp help image-->
+    <style>
+        .marginauto {
+            margin: 10px auto 20px;
+            display: block;
+        }
+    </style>
+
+    <!--search bar-->
+    <div class="topnav">
+        <input type="text" placeholder="I want food near ...">
+    </div>
+
+    <!--search button-->
+    <input type = "submit" value = "Search">
+
+    <!--geolocation-->
+    <button onclick="getLocation()">Locate me</button>
+    
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(showPosition);
+            } 
+            else { 
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+        
+        function showPosition(position) {
+            x.innerHTML="Latitude: " + position.coords.latitude + 
+            "<br>Longitude: " + position.coords.longitude;
+        }
+    </script>
+
+    <!--adds text-->
+    <br><br>
+    We recommend . . . 
+
+    <!--random restaurant generator-->
+    <script>
+        var number = Math.floor((Math.random() * 10) + 1);
+        var search;
+
+        if (number == 1) {
+            search = "sushi";
+        }
+        else if (number == 2) {
+            search = "burgers";
+        }
+        else if (number == 3) {
+            search = "pizza";
+        }
+        else if (number == 4) {
+            search = "chinese";
+        }
+        else if (number == 5) {
+            search = "tacos";
+        }
+        else if (number == 6) {
+            search = "ramen";
+        }
+        else if (number == 7) {
+            search = "korean";
+        }
+        else if (number == 8) {
+            search = "thai";
+        }
+        else if (number == 9) {
+            search = "poke";
+        }
+        else if (number == 10) {
+            search = "pho";
+        }
+        document.write(search)
+
+        var randomradius = Math.floor((Math.random() * 8000) + 1);
+
+        let yelpAPI = require('yelp-api');
+        let apiKey = 'FUNjHwPm21YiKZpwzqW40Ah3Fm3kGQ75DTm9i2nG6naK9F4eEGh6zdYQd67iHiPv-gBgEQSK5kpC1aRPQr27LJw82rdq5m85zDfUOvzfVwHlMKNUQsSM5QRSip5aXnYx';
+        let yelp = new yelpAPI(apiKey);
+
+        let params = [
+            { text: search }, 
+            { limit: 1 }, 
+            { radius: randomradius },
+            { location: '20002' }
+        ];
+
+        yelp.query('businesses/search', params)
+        .then(data => {
+            console.log(data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+        
+    </script>
+
+    <!--map-->
+    <div id="map"></div>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?AIzaSyBEJaI9y0dXpeFUJCndZvzMEqIEfRaWsCg&callback=initMap">
+    </script>
+    
+    <script>
+        function initMap() {
+            var restaurant = {lat: -25.344, lng: 131.036};
+            var map = new google.maps.Map(
+                document.getElementById('map'), {zoom: 4, center: restaurant});
+            var marker = new google.maps.Marker({position: restaurant, map: map});
+        }
+    </script>
+
+</body>
+</html>
